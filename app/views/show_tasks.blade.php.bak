@@ -1,0 +1,267 @@
+@extends('layouts.main')
+
+@section('header')
+@section('title') My List @stop
+@stop
+
+@section('body')
+
+@if (isset($message))
+<h4 style="color: green">{{ $message }}</h4>
+@endif
+
+@if (isset($hasTasks))
+	
+	<!-- LIST selector (triggers reload) -->
+	<div class="row">
+		<select class="center" id="task-list">
+			@if (isset($list_selected) == false || $list_selected == 0)
+				<option value="0" selected="selected">All Tasks</option>
+			@else
+				<option value="0">All Tasks</option>
+			@endif
+
+			@if (isset($hasLists))
+				@foreach ($lists as $list)
+					@if (isset($list_selected) && $list_selected == $list->id)
+						<option value="{{ $list->id }}" selected="selected">{{ $list->name }}</option>
+					@else	
+						<option value="{{ $list->id }}">{{ $list->name }}</option>
+					@endif
+				@endforeach
+			@endif
+			<option value="new">Create New List...</option>
+		</select>
+	</div>
+
+	<!-- TODAY row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($today))
+				<h1>Today <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected) }}">+ Task</a></h1>
+				<ul>
+					@foreach ($today as $task)
+					<li>
+						{{ $task->name }} 
+						<!-- <p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id.'/'.$list_selected) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p> -->
+						<!-- <p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id.'/) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p> -->
+						<!-- <p class="pull-right"> <a style="color: orange" href="{{ URL::to('.$list_selected) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p> -->
+						<!-- <p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id'task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p> -->
+						<!-- <p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p> -->
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">Today <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected) }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- TOMORROW row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($tomorrow))
+				<h1>Tomorrow <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/tomorrow') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($tomorrow as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">Tomorrow <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/tomorrow') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- WEEK row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($week))
+				<h1>This Week <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/week') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($week as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">This Week <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/week') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- TWO WEEKS row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($twoweeks))
+				<h1>Next Two Weeks <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/twoweeks') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($twoweeks as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">Next Two Weeks <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/twoweeks') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- MONTH row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($month))
+				<h1>This Month <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/month') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($month as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">This Month <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/month') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- YEAR row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($year))
+				<h1>This Year <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/year') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($year as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">This Year <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/year') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+
+	<!-- SOMEDAY row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($someday))
+				<h1>Someday <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/someday') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($someday as $task)
+					<li>
+						{{ $task->name }} 
+						<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+						<p class="pull-right"> <a style="color: gray" href="{{ URL::to('task/edit/'.$task->id) }}"><span class="glyphicon glyphicon-wrench"></span></a> |</p>
+						<p class="pull-right"> <a href="{{ URL::to('task/down/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-down"></span></a> |</p>
+						<p class="pull-right"> <a style="color: orange" href="{{ URL::to('task/up/'.$task->id) }}"><span class="glyphicon glyphicon-chevron-up"></span></a> |</p>
+						<p class="pull-right"> <a style="color: green" href="{{ URL::to('task/mark/'.$task->id) }}"><span class="glyphicon glyphicon-ok"></span></a> |</p>
+					</li>
+					<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">Someday <a class="btn btn-primary pull-right" href="{{ URL::to('task/add/'.$list_selected.'/someday') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+	
+	<!-- COMPLETE row -->
+	<div class="row">
+		<div class="col-sm-10">
+			@if (sizeof($complete))
+				<h1>Completed <a class="btn btn-default pull-right" href="{{ URL::to('task/add/'.$list_selected.'/complete') }}">+ Task</a></h1>
+				<ul>
+					@foreach ($complete as $task)
+						<li>
+							{{ $task->name }} 
+							<br>
+							<p class="pull-right"> <a style="color: red" href="{{ URL::to('task/remove/'.$task->id) }}"><span class="glyphicon glyphicon-remove"></span>	</a></p>
+							<p class="pull-right"> <a style="color: purple" href="{{ URL::to('task/unmark/'.$task->id) }}"><span class="glyphicon glyphicon-erase"></span></a> |</p>
+							<p style="color: #999">(Completed on {{$task->date_complete }}) </p>
+						</li>
+						<br>
+					@endforeach
+				</ul>
+		<hr/>
+
+	
+			@elseif ($hide_empty == false)
+			<h1 style="color: #999">Completed <a class="btn btn-default pull-right" href="{{ URL::to('task/add/'.$list_selected.'/complete') }}">+ Task</a></h1>
+			<hr/>
+			@endif
+		</div>
+	</div>
+	
+	@else
+	<h1>You don't have any tasks scheduled.</h1>
+
+	@endif
+</div>
+</div>
+
+@stop

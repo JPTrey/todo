@@ -1,0 +1,1 @@
+Thanks for registering!  You can now log in using the credentials associated with {{ $email }}

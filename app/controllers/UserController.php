@@ -72,7 +72,7 @@ class UserController extends BaseController {
 		
 		else {
 		    $user->save();
-			return View::make('show_tasks');
+			return Redirect::to('/task');
 		}
 	}
 

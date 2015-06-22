@@ -148,7 +148,7 @@ class TaskController extends BaseController {
 		
 		$priority = Input::get('priority');
 		if ($priority == 'two weeks') {
-			$priority == 'twoweeks';
+			$priority = 'twoweeks';
 		}
 		$task->priority = $priority;
 		

@@ -145,7 +145,13 @@ class TaskController extends BaseController {
 		$task->user_id = Auth::user()->id;
 		$task->name = Input::get('name');
 		$task->list_id = Input::get('list');
-		$task->priority = Input::get('priority');
+		
+		$priority = Input::get('priority');
+		if ($priority == 'two weeks') {
+			$priority == 'twoweeks';
+		}
+		$task->priority = $priority;
+		
 		if (Input::get('complete') != null) {
 			$task->complete = Input::get('complete');
 			$now = new DateTime(null, new DateTimeZone('America/New_York'));
